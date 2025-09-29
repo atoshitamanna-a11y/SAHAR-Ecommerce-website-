@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAHAR Perfume Oils</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">SAHAR</div>
+  <nav>
+    <a href="#shop">Shop</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Welcome to SAHAR Perfume Oils</h1>
+  <p>Handmade, budget-friendly, inspired by renowned perfumes.</p>
+  <button class="btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+</section>
+
+<!-- PRODUCTS -->
+<section id="shop">
+  <h4 style="text-align:center;margin-top:16px;">Our Products</h4>
+  <div class="products" id="productGrid">
+    <!-- Product cards will be added by JS -->
+  </div>
+</section>
+
+<!-- CART BUTTON -->
+<button class="cart-btn" onclick="toggleCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
+
+<!-- CART DRAWER -->
+<div class="drawer" id="cartDrawer">
+  <h3>Your Cart</h3>
+  <div class="cart-list" id="cartList">
+    <p>Your cart is empty</p>
+  </div>
+  <div class="checkout">
+    <h4>Checkout</h4>
+    <div>Subtotal: ৳<span id="subtotal">0</span></div>
+    <div>Delivery: ৳<span id="delivery">70</span></div>
+    <div>Total: ৳<span id="total">0</span></div>
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="text" id="phone" placeholder="Phone Number" required>
+    <textarea id="address" placeholder="Delivery Address" rows="3" required></textarea>
+    <button onclick="submitOrder()">Submit Order</button>
+  </div>
+</div>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="contact">
+  <h4>Contact Us</h4>
+  <p>Email: sahar.bd2024@gmail.com</p>
+  <p>Phone: +880 1936-444475</p>
+  <p>Address: House 12, Road 5, Dhaka, Bangladesh</p>
+  <p>Follow us on Instagram: <a href="https://instagram.com/sahar" target="_blank">@sahar_bd24</a></p>
+</section>
+
+<!-- FOOTER -->
+<footer>© <span id="year"></span> SAHAR • Handmade Perfume Oils</footer>
+
+<script>
+  // ---------- PRODUCT DATA ----------
+  const products = [
+    {id:1,title:"Chocolate",price:150,desc:"3ml",img:"image/chocolate.jpg"},
+    {id:2,title:"Creed Aventus ",price:150,desc:"3ml",img:"image/creed.jpg"},
+    {id:3,title:"Cool Water",price:150,desc:"3ml",img:"image/Coolwater.jpg"},
+    {id:4,title:"Vampires Blood",price:150,desc:"3ml",img:"image/vblood.jpg"},
+    {id:5,title:"cloud by Ariyana",price:150,desc:"3ml",img:"image/cloud.jpg"},
+    {id:6,title:"Dior sauvaage",price:150,desc:"3ml",img:"image/dior.jpg"},
+    {id:7,title:"one million",price:150,desc:"3ml",img:"image/onemillion.jpg"},
+    {id:8,title:"VS Bombshell ",price:150,desc:"3ml",img:"image/bombshell.jpg"},
+    {id:9,title:"Tommy Girl",price:150,desc:"3ml",img:"image/tommy.jpg"},
+    {id:10,title:"Chocolate",price:280,desc:"6ml",img:"image/chocolate.jpg"},
+    {id:11,title:"Creed Aventus ",price:280,desc:"6ml",img:"image/creed.jpg"},
+    {id:12,title:"Cool Water",price:280,desc:"6ml",img:"image/Coolwater.jpg"},
+    {id:13,title:"Vampires Blood",price:280,desc:"6ml",img:"image/vblood.jpg"},
+    {id:14,title:"cloud by Ariyana",price:280,desc:"6ml",img:"image/cloud.jpg"},
+    {id:15,title:"Dior sauvaage",price:280,desc:"6ml",img:"image/dior.jpg"},
+    {id:16,title:"one million",price:280,desc:"6ml",img:"image/onemillion.jpg"},
+    {id:17,title:"VS Bombshell ",price:280,desc:"3ml",img:"image/bombshell.jpg"},
+    {id:18,title:"Tommy Girl",price:280,desc:"3ml",img:"image/tommy.jpg"},
+   ];
+  // ---------- RENDER PRODUCTS ----------
+  const grid = document.getElementById('productGrid');
+  products.forEach(p=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <img src="${p.img}" alt="${p.title}">
+      <div class="meta"><div class="title">${p.title}</div><div class="price">৳${p.price}</div></div>
+      <p>${p.desc}</p>
+      <button class="add">Add to Cart</button>
+    `;
+    grid.appendChild(card);
+    card.querySelector('.add').addEventListener('click', ()=>addToCart(p.id));
+  });
+
+  // ---------- CART LOGIC ----------
+  let cart = {};
+  function toggleCart(){document.getElementById('cartDrawer').classList.toggle('open');}
+  function updateCartCount(){
+    const count = Object.values(cart).reduce((a,b)=>a+b,0);
+    document.getElementById('cartCount').textContent = count;
+  }
+
+  function addToCart(id){
+    cart[id] = (cart[id]||0)+1;
+    renderCart();
+    updateCartCount();
+  }
+
+  function removeFromCart(id){
+    if(cart[id]){cart[id]-=1;if(cart[id]<=0) delete cart[id];}
+    renderCart();
+    updateCartCount();
+  }
+
+  function renderCart(){
+    const list = document.getElementById('cartList');
+    list.innerHTML='';
+    let subtotal=0;
+    if(Object.keys(cart).length===0){list.innerHTML='<p>Your cart is empty</p>';}
+    for(let id in cart){
+      const prod = products.find(p=>p.id==id);
+      const qty = cart[id];
+      subtotal+=prod.price*qty;
+      const row = document.createElement('div');
+      row.className='cart-row';
+      row.innerHTML=`
+        <img src="${prod.img}" alt="${prod.title}">
+        <div class="info">
+          <div style="font-weight:700">${prod.title}</div>
+          <div>৳${prod.price} × ${qty}</div>
+        </div>
+        <div class="qty">
+          <button class="plus">＋</button>
+          <button class="minus">−</button>
+        </div>
+      `;
+      row.querySelector('.plus').addEventListener('click', ()=>addToCart(prod.id));
+      row.querySelector('.minus').addEventListener('click', ()=>removeFromCart(prod.id));
+      list.appendChild(row);
+    }
+    document.getElementById('subtotal').textContent=subtotal;
+    const delivery=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--delivery'));
+    document.getElementById('delivery').textContent=delivery;
+    document.getElementById('total').textContent=subtotal+delivery;
+  }
+
+  function submitOrder(){
+    const name=document.getElementById('name').value.trim();
+    const phone=document.getElementById('phone').value.trim();
+    const address=document.getElementById('address').value.trim();
+    if(!name || !phone || !address){alert('Please fill all fields');return;}
+    cart={};
+    renderCart();
+    updateCartCount();
+    document.getElementById('name').value='';
+    document.getElementById('phone').value='';
+    document.getElementById('address').value='';
+    toggleCart();
+    alert('Order submitted successfully!');
+  }
+
+  document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+
+</body>
+</html>
