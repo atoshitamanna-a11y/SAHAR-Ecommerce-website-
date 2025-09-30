@@ -8,20 +8,27 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
-  <div class="logo">SAHAR</div>
+  <div class="logo">
+    <img src="image/logo.png" alt="SAHAR Logo">
+    <span>SAHAR</span>
+  </div>
   <nav>
-    <a href="#shop">Shop</a>
+    <a href="#products">Shop</a>
     <a href="#contact">Contact</a>
   </nav>
+  <div class="cart" onclick="toggleCart()">🛒 <span id="cartCount">0</span></div>
 </header>
 
-<!-- HERO -->
+
+<!-- HERO COVER -->
 <section class="hero">
-  <h1>Welcome to SAHAR Perfume Oils</h1>
-  <p>Handmade, budget-friendly, inspired by renowned perfumes.</p>
-  <button class="btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  <img src="image/cover.jpg" alt="SAHAR Perfume Oils Cover">
+  <div class="hero-text">
+    <h1>Welcome to SAHAR</h1>
+    <p>Luxury Perfume Oils at Affordable Prices</p>
+    <a href="#products" class="btn">Shop Now</a>
+  </div>
 </section>
 
 <!-- PRODUCTS -->
